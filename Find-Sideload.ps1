@@ -313,8 +313,10 @@ if ($GenProxy) {
   $pe2 = Get-PEInfo $b2
   if (-not $pe2 -or -not $pe2.Exports) { Write-Host 'geen exports te parsen'; return }
   $def = Join-Path (Get-Location).Path ($GenProxy -replace '\.dll$', '') + '.def'
+  $base = $GenProxy -replace '\.dll$', ''
+  $orig = $base + '_orig'
   $lines = @("LIBRARY $GenProxy", 'EXPORTS')
-  foreach ($e in $pe2.Exports) { $lines += ('  {0}={1}.{0}' -f $e, $GenProxy) }
+  foreach ($e in $pe2.Exports) { $lines += ('  {0}={1}.{0}' -f $e, $orig) }
   [IO.File]::WriteAllLines($def, $lines)
-  Write-Host ("[+] proxy def: {0}  (x64; test de forwarders, data-exports handmatig)" -f $def)
+  Write-Host ("[+] proxy def: {0}  (naam-forwarders; voor ordinals gebruik proxygen.py)" -f $def)
 }
